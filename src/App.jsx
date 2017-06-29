@@ -38,8 +38,13 @@ class App extends Component {
   }
 
   sendMessage = (message, user) => {
-    this.socket.send(JSON.stringify({message:message, user:user, id:uuidv4()}));
+    this.socket.send(JSON.stringify({message:message, user:user, id:uuidv4(), type:"postMessage"}));
     //console.log(uuidv4());
+  }
+
+  postNotification = (newUser, oldUser) => {
+    console.log("IM SENDING IT NOW");
+    this.socket.send(JSON.stringify({newUser:newUser, oldUser:oldUser, type:"postNotification", id: uuidv4()}))
   }
 
 
@@ -49,12 +54,22 @@ componentDidMount() {
   //if Connected
   this.socket.onopen = (event) => {
     console.log("Connected to Server");
+    //CONECTION MADE/////////////////////////////////////////////////////////////
     this.socket.onmessage = (event) => {
       let data = JSON.parse(event.data);
-      //console.log(data);
-      const newMessage = {username: data.user, content:data.message, key: data.id};
-      const messages = this.state.messages.concat(newMessage);
-      this.setState({messages: messages});
+      console.log(data);
+
+      if (data.type === "postMessage") {
+        const newMessage = {username: data.user, content:data.message, key: data.id};
+        const messages = this.state.messages.concat(newMessage);
+        this.setState({messages: messages});
+      }
+
+      if (data.type === "postNotification")
+      {
+        console.log("I GOT THE POST NOTIFICATION FROM SERVER FINALY!!");
+      }
+
     };
   };
 
@@ -82,7 +97,7 @@ componentDidMount() {
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
         <MessageList messages = {this.state.messages}/>
-        <ChatBar user = {this.state.currentUser} msgFunction={this.sendMessage}/>
+        <ChatBar user = {this.state.currentUser} msgFunction={this.sendMessage} postNotification={this.postNotification}/>
       </div>
     );
   }
