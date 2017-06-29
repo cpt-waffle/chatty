@@ -1,14 +1,29 @@
 import React, {Component} from 'react';
 
 class ChatBar extends Component {
+  constructor(props) {
+    super(props);
+    console.log("HERE");
+    console.log(this.props.user.name);
+    this.state = {user: this.props.user.name};
+  }
+
+  handleChange = (event) => {
+
+    console.log(event.target.value);
+    this.setState({user: event.target.value});
+  }
+
   handleKeyPress = (event) => {
     //console.log(event.key);
     if (event.key === 'Enter')
     {
-      //this.socket.send('hello');
       //console.log("ENTER PRESSED");
       //console.log(event.target.value);
-      this.props.msgFunction(event.target.value, this.textInput.value);
+      console.log("////");
+      console.log(this.props);
+
+      this.props.msgFunction(event.target.value, this.state.user);
     }
   }
 
@@ -17,7 +32,7 @@ class ChatBar extends Component {
     console.log(this.props.user);
     return (
       <footer className="chatbar">
-          <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={this.props.user.name} ref={(input) => {this.textInput = input;}}/>
+          <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={this.state.user} onBlur={this.handleChange}/>
           <input className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyPress = {this.handleKeyPress }/>
       </footer>
       );

@@ -39,10 +39,7 @@ class App extends Component {
 
   sendMessage = (message, user) => {
     this.socket.send(JSON.stringify({message:message, user:user, id:uuidv4()}));
-    console.log(uuidv4());
-    const newMessage = {username: user, content: message};
-    const messages = this.state.messages.concat(newMessage);
-    this.setState({messages: messages});
+    //console.log(uuidv4());
   }
 
 
@@ -50,9 +47,20 @@ componentDidMount() {
   console.log("componentDidMount <App />");
   //The actual socket
   //if Connected
-  this.socket.onopen = function (event) {
+  this.socket.onopen = (event) => {
     console.log("Connected to Server");
+    this.socket.onmessage = (event) => {
+      let data = JSON.parse(event.data);
+      //console.log(data);
+      const newMessage = {username: data.user, content:data.message, key: data.id};
+      const messages = this.state.messages.concat(newMessage);
+      this.setState({messages: messages});
+    };
   };
+
+
+
+
   setTimeout(() => {
     //this.socket.send("my message has been send");
     console.log("Simulating incoming message");
