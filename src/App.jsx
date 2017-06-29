@@ -1,25 +1,10 @@
 import React, {Component} from 'react';
 import ChatBar from './ChatBar.jsx';
-import Message from './Message.jsx';
 import MessageList from './MessageList.jsx';
 //import uuidv4 from './uuid.jsx/v4';
 const uuidv4 = require('uuid/v4');
 
-  let data = {
-  currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-  messages: [
-    {
-      key: "1",
-      username: "Bob",
-      content: "Has anyone seen my marbles?",
-    },
-    {
-      key: "2",
-      username: "Anonymous",
-      content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-    }
-  ]
-}
+
 
 //Object
 
@@ -31,8 +16,9 @@ class App extends Component {
   constructor(props) {
     super(props);
       this.state = {
-      currentUser: {name: "Bob"},
-      messages: []
+      currentUser: {name: "Anonymous"},
+      messages: [],
+      usersOnline: 0
     };
     this.socket = new WebSocket('ws://localhost:3001');
   }
@@ -43,7 +29,7 @@ class App extends Component {
   }
 
   postNotification = (newUser, oldUser) => {
-    console.log("IM SENDING IT NOW");
+    //console.log("IM SENDING IT NOW");
     this.socket.send(JSON.stringify({newUser:newUser, oldUser:oldUser, type:"postNotification", id: uuidv4()}))
   }
 
@@ -57,17 +43,27 @@ componentDidMount() {
     //CONECTION MADE/////////////////////////////////////////////////////////////
     this.socket.onmessage = (event) => {
       let data = JSON.parse(event.data);
-      console.log(data);
+      //console.log(data);
 
       if (data.type === "postMessage") {
-        const newMessage = {username: data.user, content:data.message, key: data.id};
+        const newMessage = {username: data.user, content:data.message, key: data.id, type: data.type};
+        //console.log(newMessage);
         const messages = this.state.messages.concat(newMessage);
         this.setState({messages: messages});
       }
 
       if (data.type === "postNotification")
       {
+        const content = data.oldUser + " changed name to " + data.newUser;
+        const newNotification = {type: data.type, content: content, key: data.id};
+        const messages = this.state.messages.concat(newNotification);
         console.log("I GOT THE POST NOTIFICATION FROM SERVER FINALY!!");
+        this.setState({messages: messages})
+      }
+      if (data.type === "userCount") {
+        console.log(data.userNumber);
+        this.setState({usersOnline: data.userNumber});
+        console.log("users Online" + this.state.usersOnline);
       }
 
     };
@@ -95,6 +91,7 @@ componentDidMount() {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
+          <h3>Users Online: {this.state.usersOnline}</h3>
         </nav>
         <MessageList messages = {this.state.messages}/>
         <ChatBar user = {this.state.currentUser} msgFunction={this.sendMessage} postNotification={this.postNotification}/>

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Message from './Message.jsx';
+import Notification from './Notification.jsx';
 
 class MessageList extends Component {
 
@@ -10,8 +11,15 @@ class MessageList extends Component {
     let array = [];
     for (let i in this.props.messages)
     {
-      //console.log(this.props.messages[i].username);
-      array.push(<Message key = {this.props.messages[i].key} username = {this.props.messages[i].username} message={this.props.messages[i].content}/>);
+      if (this.props.messages[i].type === "postMessage")
+      {
+        console.log("INSIDE POST MESSAGE");
+        array.push(<Message key = {this.props.messages[i].key} username = {this.props.messages[i].username} message={this.props.messages[i].content}/>);
+      }
+      if (this.props.messages[i].type === "postNotification")
+      {
+        array.push(<Notification message = {this.props.messages[i].content}/>)
+      }
     }
     //console.log(array);
 
