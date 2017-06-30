@@ -25,7 +25,7 @@ class App extends Component {
   }
 
   sendMessage = (message, user) => {
-    this.socket.send(JSON.stringify({message:message, user:user, id:uuidv4(), type:"postMessage"}));
+    this.socket.send(JSON.stringify({message:message, user:user, id:uuidv4(), type:"postMessage", color: this.color}));
     //console.log(uuidv4());
   }
 
@@ -45,7 +45,8 @@ componentDidMount() {
       //console.log(data);
 
       if (data.type === "postMessage") {
-        const newMessage = {username: data.user, content:data.message, key: data.id, type: data.type};
+        const newMessage = {username: data.user, content:data.message, key: data.id, type: data.type, color: data.color};
+        //console.log("///");
         //console.log(newMessage);
         const messages = this.state.messages.concat(newMessage);
         this.setState({messages: messages});
@@ -61,10 +62,11 @@ componentDidMount() {
       }
       if (data.type === "userCount") {
         console.log(data);
-        this.color = data.color;
-        console.log("COLOR IS " + this.color);
         this.setState({usersOnline: data.userNumber});
         console.log("users Online" + this.state.usersOnline);
+      }
+      if (data.type === "userColor") {
+        this.color = data.color;
       }
     };
   };
@@ -89,7 +91,7 @@ componentDidMount() {
           <a href="/" className="navbar-brand">Chatty</a>
           <h3 className="counter" >Users Online: {this.state.usersOnline}</h3>
         </nav>
-        <MessageList messages = {this.state.messages} color={this.color}/>
+        <MessageList messages = {this.state.messages}/>
         <ChatBar user = {this.state.currentUser} msgFunction={this.sendMessage} postNotification={this.postNotification}/>
       </div>
     );

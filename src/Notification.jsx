@@ -6,7 +6,7 @@ class Notification extends Component {
   console.log(this.props.message);
 
     return (
-    <div className="message-system">
+    <div className="message system">
       <span className="message">{this.props.message}</span>
   </div>
     );
