@@ -10,7 +10,6 @@ class ChatBar extends Component {
 
   handleChange = (event) => {
     console.log("THIS USER=>>" + this.state.user);
-
     this.props.postNotification(event.target.value, this.state.user);
     this.setState({user: event.target.value});
   }
@@ -34,7 +33,7 @@ class ChatBar extends Component {
     return (
       <footer className="chatbar">
           <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={this.state.user} onBlur={this.handleChange}/>
-          <input className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyPress = {this.handleKeyPress }/>
+          <input className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyPress = {this.handleKeyPress } />
       </footer>
       );
   };

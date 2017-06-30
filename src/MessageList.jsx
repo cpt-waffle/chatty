@@ -13,8 +13,9 @@ class MessageList extends Component {
     {
       if (this.props.messages[i].type === "postMessage")
       {
-        console.log("INSIDE POST MESSAGE");
-        array.push(<Message key = {this.props.messages[i].key} username = {this.props.messages[i].username} message={this.props.messages[i].content}/>);
+        //console.log("COLOR IS =" + this.props.color);
+        //console.log("INSIDE POST MESSAGE");
+        array.push(<Message key = {this.props.messages[i].key} username = {this.props.messages[i].username} message={this.props.messages[i].content} color={this.props.color}/>);
       }
       if (this.props.messages[i].type === "postNotification")
       {

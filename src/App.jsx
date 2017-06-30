@@ -5,7 +5,6 @@ import MessageList from './MessageList.jsx';
 const uuidv4 = require('uuid/v4');
 
 
-
 //Object
 
 class App extends Component {
@@ -18,8 +17,10 @@ class App extends Component {
       this.state = {
       currentUser: {name: "Anonymous"},
       messages: [],
-      usersOnline: 0
+      usersOnline: 0,
     };
+    this.color = "";
+
     this.socket = new WebSocket('ws://localhost:3001');
   }
 
@@ -32,8 +33,6 @@ class App extends Component {
     //console.log("IM SENDING IT NOW");
     this.socket.send(JSON.stringify({newUser:newUser, oldUser:oldUser, type:"postNotification", id: uuidv4()}))
   }
-
-
 componentDidMount() {
   console.log("componentDidMount <App />");
   //The actual socket
@@ -61,16 +60,14 @@ componentDidMount() {
         this.setState({messages: messages})
       }
       if (data.type === "userCount") {
-        console.log(data.userNumber);
+        console.log(data);
+        this.color = data.color;
+        console.log("COLOR IS " + this.color);
         this.setState({usersOnline: data.userNumber});
         console.log("users Online" + this.state.usersOnline);
       }
-
     };
   };
-
-
-
 
   setTimeout(() => {
     //this.socket.send("my message has been send");
@@ -84,16 +81,15 @@ componentDidMount() {
   }, 3000);
 }
 
-
   render() {
     console.log("Rendering <App/>");
     return (
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
-          <h3>Users Online: {this.state.usersOnline}</h3>
+          <h3 className="counter" >Users Online: {this.state.usersOnline}</h3>
         </nav>
-        <MessageList messages = {this.state.messages}/>
+        <MessageList messages = {this.state.messages} color={this.color}/>
         <ChatBar user = {this.state.currentUser} msgFunction={this.sendMessage} postNotification={this.postNotification}/>
       </div>
     );
