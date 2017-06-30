@@ -26,28 +26,21 @@ class App extends Component {
 
   sendMessage = (message, user) => {
     this.socket.send(JSON.stringify({message:message, user:user, id:uuidv4(), type:"postMessage", color: this.color}));
-    //console.log(uuidv4());
   }
 
   postNotification = (newUser, oldUser) => {
-    //console.log("IM SENDING IT NOW");
     this.socket.send(JSON.stringify({newUser:newUser, oldUser:oldUser, type:"postNotification", id: uuidv4()}))
   }
 componentDidMount() {
-  console.log("componentDidMount <App />");
   //The actual socket
   //if Connected
   this.socket.onopen = (event) => {
-    console.log("Connected to Server");
     //CONECTION MADE/////////////////////////////////////////////////////////////
     this.socket.onmessage = (event) => {
       let data = JSON.parse(event.data);
-      //console.log(data);
 
       if (data.type === "postMessage") {
         const newMessage = {username: data.user, content:data.message, key: data.id, type: data.type, color: data.color};
-        //console.log("///");
-        //console.log(newMessage);
         const messages = this.state.messages.concat(newMessage);
         this.setState({messages: messages});
       }
@@ -57,13 +50,11 @@ componentDidMount() {
         const content = data.oldUser + " changed name to " + data.newUser;
         const newNotification = {type: data.type, content: content, key: data.id};
         const messages = this.state.messages.concat(newNotification);
-        console.log("I GOT THE POST NOTIFICATION FROM SERVER FINALY!!");
         this.setState({messages: messages})
       }
       if (data.type === "userCount") {
-        console.log(data);
         this.setState({usersOnline: data.userNumber});
-        console.log("users Online" + this.state.usersOnline);
+
       }
       if (data.type === "userColor") {
         this.color = data.color;
@@ -72,19 +63,13 @@ componentDidMount() {
   };
 
   setTimeout(() => {
-    //this.socket.send("my message has been send");
-    console.log("Simulating incoming message");
-    // Add a new message to the list of messages in the data store
     const newMessage = {key: 3, username: "Michelle", content: "Local singles dying to meet you!"};
     const messages = this.state.messages.concat(newMessage)
-    // Update the state of the app component.
-    // Calling setState will trigger a call to render() in App and all child components.
     this.setState({messages: messages})
   }, 3000);
 }
 
   render() {
-    console.log("Rendering <App/>");
     return (
       <div>
         <nav className="navbar">

@@ -6,26 +6,19 @@ class MessageList extends Component {
 
 
   render() {
-    //console.log(this.props.messages);
 
     let array = [];
     for (let i in this.props.messages)
     {
       if (this.props.messages[i].type === "postMessage")
       {
-        console.log(this.props.messages[i]);
-        //console.log("COLOR IS =" + this.props.color);
-        //console.log("INSIDE POST MESSAGE");
-        array.push(<Message key = {this.props.messages[i].key} username = {this.props.messages[i].username} message={this.props.messages[i].content} color={this.props.messages[i].color}/>);
+       array.push(<Message key = {this.props.messages[i].key} username = {this.props.messages[i].username} message={this.props.messages[i].content} color={this.props.messages[i].color}/>);
       }
       if (this.props.messages[i].type === "postNotification")
       {
         array.push(<Notification message = {this.props.messages[i].content}/>)
       }
     }
-    //console.log(array);
-
-    console.log("Rendering <MessageList/>");
     return (
       <main className="messages">
       {array}
