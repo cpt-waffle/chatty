@@ -4,9 +4,14 @@ A simple chat client up that uses express, react, and sockets. Sends messages to
 Install the dependencies and start the server.
 
 ```
+go inside the chatty folder and open "chatty-server" folder
+node server.js
+
+inside chatty
 npm install
 npm start
 open http://localhost:3000
+
 ```
 
 ### Dependencies
